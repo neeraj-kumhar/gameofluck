@@ -10,7 +10,7 @@ const playSFX = (type) => {
     if (!AudioContext) return;
     const ctx = new AudioContext();
     const now = ctx.currentTime;
-    
+
     if (type === 'START') {
       const osc = ctx.createOscillator();
       const gain = ctx.createGain();
@@ -24,7 +24,7 @@ const playSFX = (type) => {
       gain.connect(ctx.destination);
       osc.start(now);
       osc.stop(now + 0.3);
-    } 
+    }
     else if (type === 'STEP') {
       const osc = ctx.createOscillator();
       const gain = ctx.createGain();
@@ -68,7 +68,7 @@ const playSFX = (type) => {
         osc.stop(now + (i * 0.1) + 0.5);
       });
     }
-  } catch(e) { }
+  } catch (e) { }
 };
 
 const Chicken = ({ navigate, balance, setBalance, gameConfig }) => {
@@ -77,7 +77,7 @@ const Chicken = ({ navigate, balance, setBalance, gameConfig }) => {
   const [currentStep, setCurrentStep] = useState(0);
   const [history, setHistory] = useState([]);
   const [lastWinAmount, setLastWinAmount] = useState(0);
-  
+
   const [tiles, setTiles] = useState(Array(MAX_STEPS).fill('UNVISITED'));
 
   const rtp = gameConfig?.chicken?.rtp || 95;
@@ -103,39 +103,39 @@ const Chicken = ({ navigate, balance, setBalance, gameConfig }) => {
 
     // Apply Admin Control Algorithm
     if (mode === 'force_loss') {
-        // Force crash on the 2nd step (so they get a taste of 1.15x but lose if they get greedy)
-        if (currentStep >= 1) return 'DANGER';
+      // Force crash on the 2nd step (so they get a taste of 1.15x but lose if they get greedy)
+      if (currentStep >= 1) return 'DANGER';
     } else if (mode === 'force_win') {
-        // Never crash
-        return 'SAFE';
+      // Never crash
+      return 'SAFE';
     } else if (mode === 'house_edge') {
-        // Force crash if the potential win multiplier on the next step exceeds 2.0x
-        const nextMult = BASE_MULTIPLIERS[currentStep + 1];
-        if (nextMult >= 2.0) return 'DANGER';
+      // Force crash if the potential win multiplier on the next step exceeds 2.0x
+      const nextMult = BASE_MULTIPLIERS[currentStep + 1];
+      if (nextMult >= 2.0) return 'DANGER';
     }
 
     // Default Random logic
     const baseDanger = Math.max(0.01, (100 - rtp) / 100);
-    const dangerProbability = baseDanger + (currentStep * 0.02); 
+    const dangerProbability = baseDanger + (currentStep * 0.02);
     return Math.random() > dangerProbability ? 'SAFE' : 'DANGER';
   };
 
   const handleNextStep = () => {
     if (phase !== 'PLAYING') return;
-    
+
     const outcome = calculateOutcome();
     const newTiles = [...tiles];
-    
+
     if (outcome === 'SAFE') {
       playSFX('STEP');
       newTiles[currentStep] = 'SAFE';
       setTiles(newTiles);
-      
+
       const nextStep = currentStep + 1;
       setCurrentStep(nextStep);
-      
+
       if (nextStep === MAX_STEPS) {
-         handleCashOut(nextStep); // Win max automatically
+        handleCashOut(nextStep); // Win max automatically
       }
     } else {
       playSFX('CRASH');
@@ -149,7 +149,7 @@ const Chicken = ({ navigate, balance, setBalance, gameConfig }) => {
   const handleCashOut = (forcedStep = null) => {
     const stepToCash = forcedStep !== null ? forcedStep : currentStep;
     if (stepToCash === 0) return; // Cannot cashout at step 0
-    
+
     const mult = BASE_MULTIPLIERS[stepToCash];
     const win = betAmount * mult;
     playSFX('CASHOUT');
@@ -167,7 +167,7 @@ const Chicken = ({ navigate, balance, setBalance, gameConfig }) => {
     <div className="chicken-container animate-fade-in">
       <div className="chicken-header">
         <div className="chicken-history">
-          {history.length === 0 && <span style={{color: 'var(--text-muted)'}}>No recent jumps</span>}
+          {history.length === 0 && <span style={{ color: 'var(--text-muted)' }}>No recent jumps</span>}
           {history.map((h) => (
             <span key={h.id} className={`history-dot ${h.result === 'CASHOUT' ? 'win' : 'lose'}`}>
               {h.result === 'CASHOUT' ? `${h.mult.toFixed(2)}x` : `0x`}
@@ -186,9 +186,9 @@ const Chicken = ({ navigate, balance, setBalance, gameConfig }) => {
             <label>Bet Amount (₹)</label>
             <div className="stepper">
               <button onClick={() => { setBetAmount(Math.max(10, betAmount - 10)); setPhase('IDLE'); }} disabled={phase === 'PLAYING'}>-</button>
-              <input 
-                type="number" 
-                value={betAmount} 
+              <input
+                type="number"
+                value={betAmount}
                 onChange={(e) => { setBetAmount(Math.max(10, parseFloat(e.target.value) || 10)); setPhase('IDLE'); }}
                 disabled={phase === 'PLAYING'}
               />
@@ -197,33 +197,33 @@ const Chicken = ({ navigate, balance, setBalance, gameConfig }) => {
           </div>
 
           <div className="multiplier-hints">
-             <div className="hint-box">
-                <span className="hint-label">Current Step</span>
-                <span className="hint-value" style={{color: 'var(--primary)'}}>{currentStep} / {MAX_STEPS}</span>
-             </div>
-             <div className="hint-box">
-                <span className="hint-label">Potential Win</span>
-                 <span className="hint-value" style={{color: phase === 'PLAYING' ? '#23c773' : '#fff'}}>
-                   ₹{(betAmount * (phase === 'PLAYING' ? BASE_MULTIPLIERS[currentStep] : 0)).toFixed(2)}
-                 </span>
-             </div>
+            <div className="hint-box">
+              <span className="hint-label">Current Step</span>
+              <span className="hint-value" style={{ color: 'var(--primary)' }}>{currentStep} / {MAX_STEPS}</span>
+            </div>
+            <div className="hint-box">
+              <span className="hint-label">Potential Win</span>
+              <span className="hint-value" style={{ color: phase === 'PLAYING' ? '#23c773' : '#fff' }}>
+                ₹{(betAmount * (phase === 'PLAYING' ? BASE_MULTIPLIERS[currentStep] : 0)).toFixed(2)}
+              </span>
+            </div>
           </div>
 
           <div className="action-area">
             {phase === 'PLAYING' ? (
               <div className="playing-actions">
-                 <button 
-                  className="btn-huge btn-cashout" 
-                  onClick={() => handleCashOut()} 
+                <button
+                  className="btn-huge btn-cashout"
+                  onClick={() => handleCashOut()}
                   disabled={currentStep === 0}
                   style={{ opacity: currentStep === 0 ? 0.5 : 1 }}
                 >
-                   CASH OUT
-                   <span>{(betAmount * BASE_MULTIPLIERS[currentStep]).toFixed(2)} ₹</span>
+                  CASH OUT
+                  <span>{(betAmount * BASE_MULTIPLIERS[currentStep]).toFixed(2)} ₹</span>
                 </button>
                 <button className="btn-huge btn-jump" onClick={handleNextStep}>
-                   TAKE STEP
-                   <span>Next: {BASE_MULTIPLIERS[currentStep + 1]?.toFixed(2)}x</span>
+                  TAKE STEP
+                  <span>Next: {BASE_MULTIPLIERS[currentStep + 1]?.toFixed(2)}x</span>
                 </button>
               </div>
             ) : (
@@ -238,35 +238,35 @@ const Chicken = ({ navigate, balance, setBalance, gameConfig }) => {
         <div className="chicken-grid-area">
           {phase === 'CASHOUT' && (
             <div className="result-overlay CASHOUT">
-               <h3>Safe!</h3>
-               <h2>{lastWinAmount.toFixed(2)} ₹</h2>
+              <h3>Safe!</h3>
+              <h2>{lastWinAmount.toFixed(2)} ₹</h2>
             </div>
           )}
           {phase === 'CRASHED' && (
             <div className="result-overlay BUSTED">
-               <h3>Fried!</h3>
-               <h2>0.00 ₹</h2>
+              <h3>Fried!</h3>
+              <h2>0.00 ₹</h2>
             </div>
           )}
           <div className="road-perspective-wrapper">
             <div className="chicken-path" style={{ '--step-offset': currentStep }}>
-            {tiles.map((status, index) => {
-              const isCurrent = phase === 'PLAYING' && index === currentStep;
-              const isPast = index < currentStep;
-               return (
-                <div key={index} className={`path-tile ${status} ${isCurrent ? 'ACTIVE' : ''} ${isPast ? 'PAST' : ''}`}>
-                   <div className="tile-multiplier">{BASE_MULTIPLIERS[index + 1].toFixed(2)}x</div>
-                   <div className="tile-icon">
-                     {status === 'UNVISITED' && isCurrent && <img src="/cartoon_chicken.png" className="icon-chicken pulse" alt="Chicken" />}
-                     {status === 'UNVISITED' && !isCurrent && index > currentStep && <span className="paws">🐾</span>}
-                     {status === 'SAFE' && <span>✅</span>}
-                     {status === 'DANGER' && <span>🍗🔥</span>}
-                     {index === currentStep - 1 && phase === 'CASHOUT' && <img src="/cartoon_chicken.png" className="icon-chicken-cashout" alt="Win Chicken" />}
-                   </div>
-                </div>
-              );
-            })}
-          </div>
+              {tiles.map((status, index) => {
+                const isCurrent = phase === 'PLAYING' && index === currentStep;
+                const isPast = index < currentStep;
+                return (
+                  <div key={index} className={`path-tile ${status} ${isCurrent ? 'ACTIVE' : ''} ${isPast ? 'PAST' : ''}`}>
+                    <div className="tile-multiplier">{BASE_MULTIPLIERS[index + 1].toFixed(2)}x</div>
+                    <div className="tile-icon">
+                      {status === 'UNVISITED' && isCurrent && <img src="/cartoon_chicken.png" className="icon-chicken pulse" alt="Chicken" />}
+                      {status === 'UNVISITED' && !isCurrent && index > currentStep && <span className="paws">🐾</span>}
+                      {status === 'SAFE' && <span>✅</span>}
+                      {status === 'DANGER' && <span>🍗🔥</span>}
+                      {index === currentStep - 1 && phase === 'CASHOUT' && <img src="/cartoon_chicken.png" className="icon-chicken-cashout" alt="Win Chicken" />}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
           </div>
         </div>
       </div>

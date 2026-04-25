@@ -44,10 +44,10 @@ class ColorPredictionEngine {
     generateResult() {
         const colors = ['red', 'green', 'violet'];
         const numbers = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
-        
+
         const winNumber = numbers[Math.floor(Math.random() * numbers.length)];
         let winColor = [];
-        
+
         if (winNumber === 0) winColor = ['red', 'violet'];
         else if (winNumber === 5) winColor = ['green', 'violet'];
         else if (winNumber % 2 === 0) winColor = ['red'];
@@ -63,7 +63,7 @@ class ColorPredictionEngine {
         this.history.unshift(result);
         const io = getIO();
         io.to('color-prediction').emit('game-result', result);
-        
+
         console.log(`🎨 Color Prediction Result: ${winColor} (${winNumber})`);
     }
 

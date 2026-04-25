@@ -8,16 +8,16 @@ const Admin = ({ balance, setBalance, gameConfig, setGameConfig }) => {
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
-  
+
   const [fundsInput, setFundsInput] = useState('');
   const [selectedUser, setSelectedUser] = useState(null);
   const [liveLogs, setLiveLogs] = useState([]);
 
   useEffect(() => {
     if (activeTab !== 'monitor') return;
-    
+
     const socket = io('http://localhost:5000');
-    
+
     socket.emit('join-game', 'color-prediction');
     socket.emit('join-game', 'aviator');
     socket.emit('join-game', 'marble-race');
@@ -27,30 +27,30 @@ const Admin = ({ balance, setBalance, gameConfig, setGameConfig }) => {
     };
 
     socket.on('game-result', (data) => {
-        if (data.crashPoint !== undefined) {
-             addLog('Aviator', `Crash Point: ${data.crashPoint}x`, 'danger');
-        } else if (data.color !== undefined) {
-             addLog('Color Prediction', `Result: ${data.color.join(', ')} (${data.number})`, 'success');
-        }
+      if (data.crashPoint !== undefined) {
+        addLog('Aviator', `Crash Point: ${data.crashPoint}x`, 'danger');
+      } else if (data.color !== undefined) {
+        addLog('Color Prediction', `Result: ${data.color.join(', ')} (${data.number})`, 'success');
+      }
     });
 
     socket.on('game-state', (data) => {
-        if (data.winnerId !== undefined && data.phase === 'RESULT') {
-            const lastHistory = data.history[0];
-            if (lastHistory) {
-                setLiveLogs(prev => {
-                    const isDuplicate = prev.some(l => l.game === 'Marble Race' && l.msg.includes(lastHistory.marble.name) && (Date.now() - l.id < 5000));
-                    if (isDuplicate) return prev;
-                    return [{ id: Date.now(), time: new Date().toLocaleTimeString(), game: 'Marble Race', msg: `Winner: ${lastHistory.marble.name}`, type: 'success' }, ...prev].slice(0, 50);
-                });
-            }
+      if (data.winnerId !== undefined && data.phase === 'RESULT') {
+        const lastHistory = data.history[0];
+        if (lastHistory) {
+          setLiveLogs(prev => {
+            const isDuplicate = prev.some(l => l.game === 'Marble Race' && l.msg.includes(lastHistory.marble.name) && (Date.now() - l.id < 5000));
+            if (isDuplicate) return prev;
+            return [{ id: Date.now(), time: new Date().toLocaleTimeString(), game: 'Marble Race', msg: `Winner: ${lastHistory.marble.name}`, type: 'success' }, ...prev].slice(0, 50);
+          });
         }
+      }
     });
 
     addLog('System', 'Connected to Live Game Engines...', 'info');
 
     return () => {
-       socket.disconnect();
+      socket.disconnect();
     };
   }, [activeTab]);
 
@@ -112,8 +112,8 @@ const Admin = ({ balance, setBalance, gameConfig, setGameConfig }) => {
     }));
   };
 
-  const filteredUsers = users.filter(u => 
-    u.username?.toLowerCase().includes(searchTerm.toLowerCase()) || 
+  const filteredUsers = users.filter(u =>
+    u.username?.toLowerCase().includes(searchTerm.toLowerCase()) ||
     u.email?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
@@ -140,38 +140,38 @@ const Admin = ({ balance, setBalance, gameConfig, setGameConfig }) => {
               <h3>1. Global RTP Control (All Games)</h3>
               <p className="admin-desc">Dynamically enforces House Edge across all synchronized games (including Mines & Chicken).</p>
               <div className="slider-container">
-                 <div className="slider-header">
-                    <span>Tight</span>
-                    <span className="highlight-text">{gameConfig.rtp}% RTP</span>
-                    <span>Loose</span>
-                 </div>
-                 <input 
-                    type="range" min="80" max="99" step="1"
-                    value={gameConfig.rtp}
-                    onChange={(e) => updateConfig('rtp', parseInt(e.target.value))}
-                    className="admin-range"
-                 />
+                <div className="slider-header">
+                  <span>Tight</span>
+                  <span className="highlight-text">{gameConfig.rtp}% RTP</span>
+                  <span>Loose</span>
+                </div>
+                <input
+                  type="range" min="80" max="99" step="1"
+                  value={gameConfig.rtp}
+                  onChange={(e) => updateConfig('rtp', parseInt(e.target.value))}
+                  className="admin-range"
+                />
               </div>
             </div>
-            
+
             {/* Mines Game Control */}
             <div className="admin-card">
               <h3>2. Mines Algorithm Control</h3>
               <p className="admin-desc">Control the outcome strategy specifically for the Mines game.</p>
               <div className="admin-input-group">
-                 <select 
-                    className="admin-select"
-                    value={gameConfig.mines?.mode || 'random'} 
-                    onChange={(e) => setGameConfig(prev => ({
-                       ...prev,
-                       mines: { ...(prev.mines || {}), mode: e.target.value }
-                    }))}
-                 >
-                    <option value="random">🎲 Pure Random (Fair)</option>
-                    <option value="force_loss">📉 Force Loss (Mine on 2nd Click)</option>
-                    <option value="force_win">🚀 Force Win (No Mines)</option>
-                    <option value="house_edge">🏠 House Edge (Profit Limit)</option>
-                 </select>
+                <select
+                  className="admin-select"
+                  value={gameConfig.mines?.mode || 'random'}
+                  onChange={(e) => setGameConfig(prev => ({
+                    ...prev,
+                    mines: { ...(prev.mines || {}), mode: e.target.value }
+                  }))}
+                >
+                  <option value="random">🎲 Pure Random (Fair)</option>
+                  <option value="force_loss">📉 Force Loss (Mine on 2nd Click)</option>
+                  <option value="force_win">🚀 Force Win (No Mines)</option>
+                  <option value="house_edge">🏠 House Edge (Profit Limit)</option>
+                </select>
               </div>
             </div>
 
@@ -180,24 +180,24 @@ const Admin = ({ balance, setBalance, gameConfig, setGameConfig }) => {
               <h3>3. Chicken Algorithm Control</h3>
               <p className="admin-desc">Control the outcome strategy specifically for the Chicken game.</p>
               <div className="admin-input-group">
-                 <select 
-                    className="admin-select"
-                    value={gameConfig.chicken?.mode || 'random'} 
-                    onChange={(e) => setGameConfig(prev => ({
-                       ...prev,
-                       chicken: { ...(prev.chicken || {}), mode: e.target.value }
-                    }))}
-                 >
-                    <option value="random">🎲 Pure Random (Fair)</option>
-                    <option value="force_loss">📉 Force Loss (Crash Early)</option>
-                    <option value="force_win">🚀 Force Win (No Crashes)</option>
-                    <option value="house_edge">🏠 House Edge (Profit Limit)</option>
-                 </select>
+                <select
+                  className="admin-select"
+                  value={gameConfig.chicken?.mode || 'random'}
+                  onChange={(e) => setGameConfig(prev => ({
+                    ...prev,
+                    chicken: { ...(prev.chicken || {}), mode: e.target.value }
+                  }))}
+                >
+                  <option value="random">🎲 Pure Random (Fair)</option>
+                  <option value="force_loss">📉 Force Loss (Crash Early)</option>
+                  <option value="force_win">🚀 Force Win (No Crashes)</option>
+                  <option value="house_edge">🏠 House Edge (Profit Limit)</option>
+                </select>
               </div>
             </div>
 
-            <div className="admin-card" style={{gridColumn: 'span 2'}}>
-               <p style={{textAlign: 'center', opacity: 0.6}}>Additional per-game toggles are active in the background simulation engine.</p>
+            <div className="admin-card" style={{ gridColumn: 'span 2' }}>
+              <p style={{ textAlign: 'center', opacity: 0.6 }}>Additional per-game toggles are active in the background simulation engine.</p>
             </div>
           </div>
         )}
@@ -205,14 +205,14 @@ const Admin = ({ balance, setBalance, gameConfig, setGameConfig }) => {
         {activeTab === 'users' && (
           <div className="admin-users-view">
             <div className="users-header-actions">
-               <input 
-                 type="text" 
-                 placeholder="Search users by name or email..." 
-                 className="admin-search"
-                 value={searchTerm}
-                 onChange={(e) => setSearchTerm(e.target.value)}
-               />
-               <button className="admin-btn-refresh" onClick={fetchUsers}>🔄 Refresh</button>
+              <input
+                type="text"
+                placeholder="Search users by name or email..."
+                className="admin-search"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+              <button className="admin-btn-refresh" onClick={fetchUsers}>🔄 Refresh</button>
             </div>
 
             <div className="admin-table-container">
@@ -229,7 +229,7 @@ const Admin = ({ balance, setBalance, gameConfig, setGameConfig }) => {
                 </thead>
                 <tbody>
                   {loading ? (
-                    <tr><td colSpan="6" style={{textAlign: 'center', padding: '50px'}}>Loading platform users...</td></tr>
+                    <tr><td colSpan="6" style={{ textAlign: 'center', padding: '50px' }}>Loading platform users...</td></tr>
                   ) : filteredUsers.map(u => (
                     <tr key={u.id}>
                       <td>{u.username}</td>
@@ -252,9 +252,9 @@ const Admin = ({ balance, setBalance, gameConfig, setGameConfig }) => {
                   <h3>Edit Balance: {selectedUser.username}</h3>
                   <div className="modal-body">
                     <p>Current: <span className="highlight-text">₹ {selectedUser.balance.toFixed(2)}</span></p>
-                    <input 
-                      type="number" 
-                      placeholder="New absolute balance..." 
+                    <input
+                      type="number"
+                      placeholder="New absolute balance..."
                       className="modal-input"
                       value={fundsInput}
                       onChange={(e) => setFundsInput(e.target.value)}
@@ -262,9 +262,9 @@ const Admin = ({ balance, setBalance, gameConfig, setGameConfig }) => {
                   </div>
                   <div className="modal-footer">
                     <button className="admin-btn btn-success" onClick={() => {
-                        handleUpdateUserBalance(selectedUser.id, parseFloat(fundsInput));
-                        setSelectedUser(null);
-                        setFundsInput('');
+                      handleUpdateUserBalance(selectedUser.id, parseFloat(fundsInput));
+                      setSelectedUser(null);
+                      setFundsInput('');
                     }}>Update</button>
                     <button className="admin-btn btn-warning" onClick={() => setSelectedUser(null)}>Cancel</button>
                   </div>
@@ -279,32 +279,32 @@ const Admin = ({ balance, setBalance, gameConfig, setGameConfig }) => {
             {stats ? (
               <div className="stats-cards">
                 <div className="stat-card-premium">
-                   <div className="stat-icon">👥</div>
-                   <div className="stat-info">
-                      <span className="stat-label">Total Users</span>
-                      <span className="stat-val">{stats.totalUsers}</span>
-                   </div>
+                  <div className="stat-icon">👥</div>
+                  <div className="stat-info">
+                    <span className="stat-label">Total Users</span>
+                    <span className="stat-val">{stats.totalUsers}</span>
+                  </div>
                 </div>
                 <div className="stat-card-premium">
-                   <div className="stat-icon">💰</div>
-                   <div className="stat-info">
-                      <span className="stat-label">Total Circulation</span>
-                      <span className="stat-val">₹ {stats.totalBalance?.toLocaleString()}</span>
-                   </div>
+                  <div className="stat-icon">💰</div>
+                  <div className="stat-info">
+                    <span className="stat-label">Total Circulation</span>
+                    <span className="stat-val">₹ {stats.totalBalance?.toLocaleString()}</span>
+                  </div>
                 </div>
                 <div className="stat-card-premium">
-                   <div className="stat-icon">🧾</div>
-                   <div className="stat-info">
-                      <span className="stat-label">Transactions</span>
-                      <span className="stat-val">{stats.totalTransactions}</span>
-                   </div>
+                  <div className="stat-icon">🧾</div>
+                  <div className="stat-info">
+                    <span className="stat-label">Transactions</span>
+                    <span className="stat-val">{stats.totalTransactions}</span>
+                  </div>
                 </div>
                 <div className="stat-card-premium">
-                   <div className="stat-icon">🟢</div>
-                   <div className="stat-info">
-                      <span className="stat-label">System Status</span>
-                      <span className="stat-val">{stats.systemHealth.toUpperCase()}</span>
-                   </div>
+                  <div className="stat-icon">🟢</div>
+                  <div className="stat-info">
+                    <span className="stat-label">System Status</span>
+                    <span className="stat-val">{stats.systemHealth.toUpperCase()}</span>
+                  </div>
                 </div>
               </div>
             ) : <p>Loading real-time stats...</p>}
@@ -313,32 +313,32 @@ const Admin = ({ balance, setBalance, gameConfig, setGameConfig }) => {
 
         {activeTab === 'monitor' && (
           <div className="admin-monitor-view">
-             <div className="monitor-header">
-                <h3 style={{margin: 0}}>📡 Live Engine Broadcast</h3>
-                <button className="admin-btn-refresh" onClick={() => setLiveLogs([])}>🧹 Clear Console</button>
-             </div>
-             <div className="terminal-window">
-                {liveLogs.length === 0 ? (
-                   <div className="terminal-line placeholder">Waiting for engine broadcasts...</div>
-                ) : (
-                   liveLogs.map((log) => (
-                      <div key={log.id} className={`terminal-line ${log.type}`}>
-                         <span className="log-time">[{log.time}]</span>
-                         <span className="log-game">[{log.game}]</span>
-                         <span className="log-msg">{log.msg}</span>
-                      </div>
-                   ))
-                )}
-             </div>
+            <div className="monitor-header">
+              <h3 style={{ margin: 0 }}>📡 Live Engine Broadcast</h3>
+              <button className="admin-btn-refresh" onClick={() => setLiveLogs([])}>🧹 Clear Console</button>
+            </div>
+            <div className="terminal-window">
+              {liveLogs.length === 0 ? (
+                <div className="terminal-line placeholder">Waiting for engine broadcasts...</div>
+              ) : (
+                liveLogs.map((log) => (
+                  <div key={log.id} className={`terminal-line ${log.type}`}>
+                    <span className="log-time">[{log.time}]</span>
+                    <span className="log-game">[{log.game}]</span>
+                    <span className="log-msg">{log.msg}</span>
+                  </div>
+                ))
+              )}
+            </div>
           </div>
         )}
       </div>
-      
+
       <div className="rules-footer">
-         <span className="icon">🛡️</span>
-         <div>
-            <strong>Safety Framework Active</strong>: Platform-wide configuration adjustments are successfully routed through centralized probability distribution mathematics.
-         </div>
+        <span className="icon">🛡️</span>
+        <div>
+          <strong>Safety Framework Active</strong>: Platform-wide configuration adjustments are successfully routed through centralized probability distribution mathematics.
+        </div>
       </div>
     </div>
   );
