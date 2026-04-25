@@ -1,0 +1,195 @@
+.auth-immersive-wrapper {
+  min-height: 100vh;
+  width: 100%;
+  background: url('/assets/auth-bg.png') no-repeat center center fixed;
+  background-size: cover;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  position: relative;
+  z-index: 10;
+}
+
+.auth-immersive-wrapper::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(circle at center, rgba(7, 17, 35, 0.4) 0%, rgba(7, 17, 35, 0.8) 100%);
+  z-index: -1;
+}
+
+.auth-glass-card {
+  width: 100%;
+  max-width: 480px;
+  background: rgba(14, 26, 53, 0.65);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(1, 250, 254, 0.15);
+  border-radius: 24px;
+  padding: 40px;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+  position: relative;
+  overflow: hidden;
+}
+
+.auth-glass-card::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(1, 250, 254, 0.05) 0%, transparent 70%);
+    pointer-events: none;
+}
+
+.auth-header {
+  text-align: center;
+  margin-bottom: 35px;
+}
+
+.auth-logo-text {
+  font-size: 24px;
+  font-weight: 900;
+  background: linear-gradient(135deg, #01FAFE 0%, #00f2fe 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  letter-spacing: 2px;
+  margin-bottom: 15px;
+  display: block;
+}
+
+.auth-header h2 {
+  font-size: 32px;
+  font-weight: 800;
+  color: #fff;
+  margin-bottom: 8px;
+}
+
+.auth-header p {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 15px;
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.auth-input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.auth-input-group label {
+  font-size: 13px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.8);
+  margin-left: 4px;
+}
+
+.auth-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.auth-input-wrapper input {
+  width: 100%;
+  padding: 14px 20px;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  color: #fff;
+  font-size: 16px;
+  transition: all 0.3s ease;
+}
+
+.auth-input-wrapper input:focus {
+  border-color: #01FAFE;
+  box-shadow: 0 0 15px rgba(1, 250, 254, 0.2);
+  background: rgba(0, 0, 0, 0.4);
+  outline: none;
+}
+
+.auth-btn-primary {
+  margin-top: 10px;
+  padding: 16px;
+  background: linear-gradient(135deg, #01FAFE 0%, #008C95 100%);
+  color: #000;
+  font-weight: 900;
+  font-size: 16px;
+  border-radius: 12px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  transition: all 0.3s ease;
+  box-shadow: 0 10px 20px -5px rgba(1, 250, 254, 0.3);
+}
+
+.auth-btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 15px 25px -5px rgba(1, 250, 254, 0.4);
+  filter: brightness(1.1);
+}
+
+.auth-btn-primary:active {
+  transform: translateY(0);
+}
+
+.auth-footer {
+  margin-top: 25px;
+  text-align: center;
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.auth-link {
+  color: #01FAFE;
+  font-weight: 800;
+  cursor: pointer;
+  margin-left: 5px;
+  transition: all 0.2s;
+}
+
+.auth-link:hover {
+  text-shadow: 0 0 10px rgba(1, 250, 254, 0.5);
+  text-decoration: underline;
+}
+
+.auth-error {
+  background: rgba(239, 68, 68, 0.15);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  color: #ff9999;
+  padding: 12px 15px;
+  border-radius: 10px;
+  font-size: 14px;
+  margin-bottom: 20px;
+  animation: shake 0.4s ease-in-out;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  75% { transform: translateX(5px); }
+}
+
+@media (max-width: 600px) {
+  .auth-glass-card {
+    padding: 30px 20px;
+    border-radius: 0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background: rgba(14, 26, 53, 0.85);
+  }
+  .auth-immersive-wrapper {
+    padding: 0;
+  }
+}

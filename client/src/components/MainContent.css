@@ -1,0 +1,230 @@
+.main-area {
+  flex: 1;
+  padding: 30px 40px;
+  background-color: var(--bg-color);
+  min-height: calc(100vh - 60px);
+}
+
+.hero-banner {
+  position: relative;
+  width: 100%;
+  height: 350px;
+  border-radius: 20px;
+  overflow: hidden;
+  margin-bottom: 40px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+.hero-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: brightness(0.7);
+  transition: transform 5s ease-out;
+}
+
+.hero-banner:hover .hero-img {
+  transform: scale(1.05);
+}
+
+.hero-text {
+  position: absolute;
+  top: 50%;
+  left: 50px;
+  transform: translateY(-50%);
+  max-width: 500px;
+}
+
+.hero-text h1 {
+  font-size: 52px;
+  font-weight: 900;
+  line-height: 1.1;
+  margin-bottom: 15px;
+  background: linear-gradient(90deg, #FFFFFF, var(--primary));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.hero-text p {
+  font-size: 18px;
+  color: #E0E0E0;
+}
+
+.section-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.section-title h3 {
+  font-size: 24px;
+  font-weight: 700;
+  border-left: 4px solid var(--primary);
+  padding-left: 10px;
+}
+
+.view-all {
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 14px;
+  transition: var(--transition);
+}
+
+.view-all:hover {
+  color: var(--primary);
+}
+
+.game-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 25px;
+}
+
+.game-card {
+  background-color: var(--bg-secondary);
+  border-radius: 15px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: var(--transition);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.game-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0, 140, 149, 0.2);
+  border-color: rgba(1, 250, 254, 0.3);
+}
+
+.game-img-wrapper {
+  position: relative;
+  width: 100%;
+  padding-top: 100%; /* 1:1 Aspect ratio */
+}
+
+.game-img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.live-badge {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background: red;
+  color: white;
+  padding: 4px 8px;
+  font-size: 10px;
+  font-weight: 900;
+  border-radius: 4px;
+  letter-spacing: 1px;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% { box-shadow: 0 0 0 0 rgba(255, 0, 0, 0.7); }
+  70% { box-shadow: 0 0 0 10px rgba(255, 0, 0, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(255, 0, 0, 0); }
+}
+
+.game-info {
+  padding: 15px;
+  text-align: center;
+}
+
+.game-info h4 {
+  font-size: 16px;
+  color: var(--text-main);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sports-banner {
+  background: linear-gradient(135deg, var(--bg-secondary) 0%, #15284B 100%);
+  padding: 20px;
+  border-radius: 15px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  margin-bottom: 40px;
+}
+
+.sports-match {
+  display: flex;
+  justify-content: space-between;
+  gap: 15px;
+}
+
+.team {
+  flex: 1;
+  background: var(--bg-color);
+  padding: 15px;
+  border-radius: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  transition: var(--transition);
+  font-weight: 600;
+}
+
+.team:hover {
+  background: rgba(1, 250, 254, 0.1);
+  border: 1px solid var(--primary);
+  color: var(--primary);
+}
+
+.footer {
+  margin-top: 60px;
+  padding-top: 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  display: flex;
+  justify-content: space-between;
+  color: var(--text-muted);
+  font-size: 14px;
+}
+
+.footer-links {
+  display: flex;
+  gap: 15px;
+}
+
+.footer-links a:hover {
+  color: var(--primary);
+}
+
+@media (max-width: 768px) {
+  .main-area {
+    margin-left: 0;
+    padding: 10px 15px;
+  }
+  .hero-banner {
+    height: 200px;
+    margin-bottom: 20px;
+  }
+  .hero-text {
+    left: 20px;
+    right: 20px;
+  }
+  .hero-text h1 {
+    font-size: 28px;
+  }
+  .hero-text p {
+    font-size: 14px;
+  }
+  .game-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+  .sports-match {
+    flex-direction: column;
+  }
+  .footer {
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+  }
+}
