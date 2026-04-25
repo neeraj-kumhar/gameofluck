@@ -16,7 +16,7 @@ const Admin = ({ balance, setBalance, gameConfig, setGameConfig }) => {
   useEffect(() => {
     if (activeTab !== 'monitor') return;
 
-    const socket = io('http://localhost:5000');
+    const socket = io('https://gameofluck-r491.vercel.app');
 
     socket.emit('join-game', 'color-prediction');
     socket.emit('join-game', 'aviator');
@@ -62,7 +62,7 @@ const Admin = ({ balance, setBalance, gameConfig, setGameConfig }) => {
   const fetchUsers = async () => {
     setLoading(true);
     try {
-      const res = await fetch('http://localhost:5000/api/admin/users', {
+      const res = await fetch('https://gameofluck-r491.vercel.app/api/admin/users', {
         headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
       });
       const data = await res.json();
@@ -75,7 +75,7 @@ const Admin = ({ balance, setBalance, gameConfig, setGameConfig }) => {
 
   const fetchStats = async () => {
     try {
-      const res = await fetch('http://localhost:5000/api/admin/stats', {
+      const res = await fetch('https://gameofluck-r491.vercel.app/api/admin/stats', {
         headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
       });
       const data = await res.json();
@@ -87,7 +87,7 @@ const Admin = ({ balance, setBalance, gameConfig, setGameConfig }) => {
 
   const handleUpdateUserBalance = async (userId, newBalance) => {
     try {
-      const res = await fetch(`http://localhost:5000/api/admin/users/${userId}/balance`, {
+      const res = await fetch(`https://gameofluck-r491.vercel.app/api/admin/users/${userId}/balance`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',

@@ -17,7 +17,7 @@ const Recharge = ({ user, setUser, navigate }) => {
         setLoading(true);
         try {
             const token = localStorage.getItem('token');
-            const res = await fetch('http://localhost:5000/api/wallet/recharge', {
+            const res = await fetch('https://gameofluck-r491.vercel.app/api/wallet/recharge', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

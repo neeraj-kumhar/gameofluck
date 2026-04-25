@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef, useMemo } from 'react';
 import io from 'socket.io-client';
 import './MarbleRace.css';
 
-const socket = io('http://localhost:5000');
+const socket = io('https://gameofluck-r491.vercel.app');
 
 const MARBLES = [
   { id: 1, name: 'Red Rocket', short: 'RED', color: '#ef4444', multiplier: 6.0 },

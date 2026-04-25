@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import io from 'socket.io-client';
 import './ColorPrediction.css';
 
-const socket = io('http://localhost:5000');
+const socket = io('https://gameofluck-r491.vercel.app');
 
 const playSFX = (type) => {
   try {

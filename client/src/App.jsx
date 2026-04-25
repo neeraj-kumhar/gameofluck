@@ -105,7 +105,7 @@ function App() {
     setTimeout(async () => {
         try {
             const token = localStorage.getItem('token');
-            await fetch('http://localhost:5000/api/wallet/update-balance', {
+            await fetch('https://gameofluck-r491.vercel.app/api/wallet/update-balance', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -128,7 +128,7 @@ function App() {
         const token = localStorage.getItem('token');
         if (token) {
             try {
-                const res = await fetch('http://localhost:5000/api/auth/me', {
+                const res = await fetch('https://gameofluck-r491.vercel.app/api/auth/me', {
                     headers: {
                         'Authorization': `Bearer ${token}`
                     }
