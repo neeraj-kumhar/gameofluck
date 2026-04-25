@@ -1,0 +1,9 @@
+{
+  "name": "gameofluck-root",
+  "version": "1.0.0",
+  "scripts": {
+    "install-all": "npm install --prefix backend && npm install --prefix client",
+    "build-client": "npm run build --prefix client",
+    "start": "node backend/server.js"
+  }
+}
