@@ -1,18 +1,13 @@
 {
   "version": 2,
-  "functions": {
-    "backend/server.js": {
-      "includeFiles": "node_modules/mysql2/**"
-    }
-  },
   "rewrites": [
     {
       "source": "/api/(.*)",
-      "destination": "/backend/server.js"
+      "destination": "/backend/api/index.js"
     },
     {
       "source": "/(.*)",
-      "destination": "/backend/server.js"
+      "destination": "/backend/api/index.js"
     }
   ]
 }
