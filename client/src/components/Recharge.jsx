@@ -1,3 +1,4 @@
+import API_BASE_URL from '../config';
 import React, { useState } from 'react';
 import { QRCodeSVG } from 'qrcode.react';
 import './Admin.css';
@@ -17,7 +18,7 @@ const Recharge = ({ user, setUser, navigate }) => {
         setLoading(true);
         try {
             const token = localStorage.getItem('token');
-            const res = await fetch('https://gameofluck-r491.vercel.app/api/wallet/recharge', {
+            const res = await fetch(`${API_BASE_URL}/api/wallet/recharge`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

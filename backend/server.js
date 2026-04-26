@@ -45,12 +45,10 @@ app.use(express.json());
 // Initialize Socket.io
 const io = initSocket(server);
 
-// Start Game Engines - Only in non-production/non-serverless
-if (process.env.NODE_ENV !== 'production' && !process.env.VERCEL) {
-    colorEngine.start();
-    aviatorEngine.start();
-    marbleEngine.start();
-}
+// Start Game Engines
+colorEngine.start();
+aviatorEngine.start();
+marbleEngine.start();
 
 // Request Logging Middleware
 app.use((req, res, next) => {
@@ -63,35 +61,30 @@ app.use('/api/auth', auth);
 app.use('/api/wallet', wallet);
 app.use('/api/admin', require('./routes/admin'));
 
-// Health check route for Vercel
+// Health check route
 app.get('/api/health', (req, res) => {
     res.status(200).json({ 
         status: 'OK', 
-        message: 'Backend is running on Vercel',
-        env: process.env.NODE_ENV
+        message: 'Backend is running with Game Engines active',
+        uptime: process.uptime()
     });
 });
 
 // Production handling
-if (process.env.NODE_ENV === 'production' || process.env.VERCEL) {
-    app.get('/', (req, res) => {
-        res.status(200).send('Backend API is live. Use /api/health to check status.');
-    });
+if (process.env.NODE_ENV === 'production' && !process.env.VERCEL) {
+    // Standard Production Server
+} else if (process.env.VERCEL) {
+    // Vercel fallback
 } else {
     // Local development: Serve Frontend Static Files
     const clientPath = path.join(__dirname, '../client/dist');
     app.use(express.static(clientPath));
-    app.get(/.*/, (req, res) => {
-        res.sendFile(path.join(clientPath, 'index.html'));
-    });
 }
+
+// Start the server (Required for Railway)
+server.listen(PORT, () => {
+    console.log(`🚀 Server with Game Engines running on port ${PORT}`);
+});
 
 // For Vercel Serverless Functions
 module.exports = app;
-
-// Only start the server if not running as a Vercel function
-if (process.env.NODE_ENV !== 'production' && !process.env.VERCEL) {
-    server.listen(PORT, () => {
-        console.log(`🚀 Server with Game Engines running on port ${PORT}`);
-    });
-}

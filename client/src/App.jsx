@@ -14,6 +14,8 @@ import Login from './components/Login';
 import Signup from './components/Signup';
 import Profile from './components/Profile';
 import Recharge from './components/Recharge';
+import API_BASE_URL from './config';
+
 const DEFAULT_MULTIPLIERS = {
   low: [5.6, 2.1, 1.1, 1, 0.5, 1, 1.1, 2.1, 5.6],
   medium: [13, 3, 1.3, 0.7, 0.4, 0.7, 1.3, 3, 13],
@@ -105,7 +107,7 @@ function App() {
     setTimeout(async () => {
         try {
             const token = localStorage.getItem('token');
-            await fetch('https://gameofluck-r491.vercel.app/api/wallet/update-balance', {
+            await fetch(`${API_BASE_URL}/api/wallet/update-balance`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -128,7 +130,7 @@ function App() {
         const token = localStorage.getItem('token');
         if (token) {
             try {
-                const res = await fetch('https://gameofluck-r491.vercel.app/api/auth/me', {
+                const res = await fetch(`${API_BASE_URL}/api/auth/me`, {
                     headers: {
                         'Authorization': `Bearer ${token}`
                     }

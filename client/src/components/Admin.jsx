@@ -1,3 +1,4 @@
+import API_BASE_URL from '../config';
 import React, { useState, useEffect } from 'react';
 import io from 'socket.io-client';
 import './Admin.css';
@@ -16,7 +17,7 @@ const Admin = ({ balance, setBalance, gameConfig, setGameConfig }) => {
   useEffect(() => {
     if (activeTab !== 'monitor') return;
 
-    const socket = io('https://gameofluck-r491.vercel.app');
+    const socket = io(API_BASE_URL);
 
     socket.emit('join-game', 'color-prediction');
     socket.emit('join-game', 'aviator');
@@ -62,7 +63,7 @@ const Admin = ({ balance, setBalance, gameConfig, setGameConfig }) => {
   const fetchUsers = async () => {
     setLoading(true);
     try {
-      const res = await fetch('https://gameofluck-r491.vercel.app/api/admin/users', {
+      const res = await fetch(`${API_BASE_URL}/api/admin/users`, {
         headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
       });
       const data = await res.json();
@@ -75,7 +76,7 @@ const Admin = ({ balance, setBalance, gameConfig, setGameConfig }) => {
 
   const fetchStats = async () => {
     try {
-      const res = await fetch('https://gameofluck-r491.vercel.app/api/admin/stats', {
+      const res = await fetch(`${API_BASE_URL}/api/admin/stats`, {
         headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
       });
       const data = await res.json();
@@ -87,7 +88,7 @@ const Admin = ({ balance, setBalance, gameConfig, setGameConfig }) => {
 
   const handleUpdateUserBalance = async (userId, newBalance) => {
     try {
-      const res = await fetch(`https://gameofluck-r491.vercel.app/api/admin/users/${userId}/balance`, {
+      const res = await fetch(`${API_BASE_URL}/api/admin/users/${userId}/balance`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',

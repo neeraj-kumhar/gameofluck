@@ -1,8 +1,9 @@
+import API_BASE_URL from '../config';
 import React, { useState, useEffect, useRef } from 'react';
 import io from 'socket.io-client';
 import './ColorPrediction.css';
 
-const socket = io('https://gameofluck-r491.vercel.app');
+const socket = io(API_BASE_URL);
 
 const playSFX = (type) => {
   try {

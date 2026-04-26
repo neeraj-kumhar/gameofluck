@@ -1,3 +1,4 @@
+import API_BASE_URL from '../config';
 import React, { useState } from 'react';
 import './Auth.css';
 
@@ -26,7 +27,7 @@ const Signup = ({ navigate, setUser }) => {
         setError('');
 
         try {
-            const res = await fetch('https://gameofluck-r491.vercel.app/api/auth/register', {
+            const res = await fetch(`${API_BASE_URL}/api/auth/register`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ username, email, password })
