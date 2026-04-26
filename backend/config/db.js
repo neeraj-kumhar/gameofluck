@@ -1,4 +1,5 @@
 const { Sequelize } = require('sequelize');
+const mysql2 = require('mysql2'); // Explicitly required for Vercel bundling
 const dotenv = require('dotenv');
 
 dotenv.config();
@@ -17,6 +18,7 @@ const sequelize = new Sequelize(dbConfig.database, dbConfig.username, dbConfig.p
     host: dbConfig.host,
     port: dbConfig.port,
     dialect: 'mysql',
+    dialectModule: mysql2, // Critical fix for Vercel
     logging: false,
     dialectOptions: {
         connectTimeout: 60000,
