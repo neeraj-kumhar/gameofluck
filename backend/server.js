@@ -19,28 +19,31 @@ dotenv.config();
 // Connect to MySQL
 connectDB();
 
-// Sync Database Tables
-sequelize.sync({ alter: true })
-    .then(async () => {
-        console.log('Database tables synchronized');
-        
-        // Seed Admin User
-        const User = require('./models/User');
-        const adminEmail = 'admin@rummy.com';
-        const adminExists = await User.findOne({ where: { email: adminEmail } });
-        
-        if (!adminExists) {
-            await User.create({
-                username: 'Admin',
-                email: adminEmail,
-                password: 'rummy@4545', // Will be hashed by model hook
-                role: 'admin',
-                balance: 1000000
-            });
-            console.log('🛡️ Master Admin Account Created!');
-        }
-    })
-    .catch(err => console.error('Error synchronizing tables:', err));
+// Sync Database Tables - Only in non-production or if explicitly allowed
+// In Vercel (serverless), we don't want to sync on every request
+if (process.env.NODE_ENV !== 'production' && !process.env.VERCEL) {
+    sequelize.sync({ alter: true })
+        .then(async () => {
+            console.log('Database tables synchronized');
+            
+            // Seed Admin User
+            const User = require('./models/User');
+            const adminEmail = 'admin@rummy.com';
+            const adminExists = await User.findOne({ where: { email: adminEmail } });
+            
+            if (!adminExists) {
+                await User.create({
+                    username: 'Admin',
+                    email: adminEmail,
+                    password: 'rummy@4545', 
+                    role: 'admin',
+                    balance: 1000000
+                });
+                console.log('🛡️ Master Admin Account Created!');
+            }
+        })
+        .catch(err => console.error('Error synchronizing tables:', err));
+}
 
 const app = express();
 const server = http.createServer(app);
@@ -72,11 +75,28 @@ app.use('/api/admin', require('./routes/admin'));
 const clientPath = path.join(__dirname, '../client/dist');
 app.use(express.static(clientPath));
 
-// Catch-all route for SPA - must be last
-app.get(/.*/, (req, res) => {
-    res.sendFile(path.join(clientPath, 'index.html'));
+// Health check route
+app.get('/api/health', (req, res) => {
+    res.status(200).json({ status: 'OK', message: 'Backend is running' });
 });
 
-server.listen(PORT, () => {
-    console.log(`🚀 Server with Game Engines running on port ${PORT}`);
+// Catch-all route for SPA - must be last
+app.get(/.*/, (req, res) => {
+    // Check if file exists in clientPath
+    const filePath = path.join(clientPath, 'index.html');
+    res.sendFile(filePath, (err) => {
+        if (err) {
+            res.status(200).send('Backend is running, but frontend build was not found. If this is Vercel, the frontend should be handled by Vercel rewrites.');
+        }
+    });
 });
+
+// For Vercel Serverless Functions
+module.exports = app;
+
+// Only start the server if not running as a Vercel function
+if (process.env.NODE_ENV !== 'production' || !process.env.VERCEL) {
+    server.listen(PORT, () => {
+        console.log(`🚀 Server with Game Engines running on port ${PORT}`);
+    });
+}
