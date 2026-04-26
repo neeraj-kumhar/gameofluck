@@ -55,10 +55,12 @@ app.use(express.json());
 // Initialize Socket.io
 const io = initSocket(server);
 
-// Start Game Engines
-colorEngine.start();
-aviatorEngine.start();
-marbleEngine.start();
+// Start Game Engines - Only in non-production/non-serverless
+if (process.env.NODE_ENV !== 'production' && !process.env.VERCEL) {
+    colorEngine.start();
+    aviatorEngine.start();
+    marbleEngine.start();
+}
 
 // Request Logging Middleware
 app.use((req, res, next) => {
@@ -71,31 +73,34 @@ app.use('/api/auth', auth);
 app.use('/api/wallet', wallet);
 app.use('/api/admin', require('./routes/admin'));
 
-// Serve Frontend Static Files
-const clientPath = path.join(__dirname, '../client/dist');
-app.use(express.static(clientPath));
-
-// Health check route
+// Health check route for Vercel
 app.get('/api/health', (req, res) => {
-    res.status(200).json({ status: 'OK', message: 'Backend is running' });
-});
-
-// Catch-all route for SPA - must be last
-app.get(/.*/, (req, res) => {
-    // Check if file exists in clientPath
-    const filePath = path.join(clientPath, 'index.html');
-    res.sendFile(filePath, (err) => {
-        if (err) {
-            res.status(200).send('Backend is running, but frontend build was not found. If this is Vercel, the frontend should be handled by Vercel rewrites.');
-        }
+    res.status(200).json({ 
+        status: 'OK', 
+        message: 'Backend is running on Vercel',
+        env: process.env.NODE_ENV
     });
 });
+
+// Production handling
+if (process.env.NODE_ENV === 'production' || process.env.VERCEL) {
+    app.get('/', (req, res) => {
+        res.status(200).send('Backend API is live. Use /api/health to check status.');
+    });
+} else {
+    // Local development: Serve Frontend Static Files
+    const clientPath = path.join(__dirname, '../client/dist');
+    app.use(express.static(clientPath));
+    app.get(/.*/, (req, res) => {
+        res.sendFile(path.join(clientPath, 'index.html'));
+    });
+}
 
 // For Vercel Serverless Functions
 module.exports = app;
 
 // Only start the server if not running as a Vercel function
-if (process.env.NODE_ENV !== 'production' || !process.env.VERCEL) {
+if (process.env.NODE_ENV !== 'production' && !process.env.VERCEL) {
     server.listen(PORT, () => {
         console.log(`🚀 Server with Game Engines running on port ${PORT}`);
     });
