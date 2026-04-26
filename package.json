@@ -6,7 +6,7 @@
     "install-all": "npm install && cd client && npm install && cd ../backend && npm install",
     "client-dev": "cd client && npm run dev",
     "backend-dev": "cd backend && npm run dev",
-    "build": "cd client && npm install && npm run build",
+    "build": "cd client && npm install && npm run build && cd .. && rm -rf dist && cp -r client/dist ./dist",
     "dev": "npm run backend-dev & npm run client-dev"
   },
   "dependencies": {
