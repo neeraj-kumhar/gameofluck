@@ -2,10 +2,6 @@
   "version": 2,
   "builds": [
     {
-      "src": "backend/api/index.js",
-      "use": "@vercel/node"
-    },
-    {
       "src": "client/package.json",
       "use": "@vercel/static-build",
       "config": { "distDir": "dist" }
@@ -14,11 +10,11 @@
   "rewrites": [
     {
       "source": "/api/(.*)",
-      "destination": "backend/api/index.js"
+      "destination": "https://your-railway-backend-url.up.railway.app/api/$1"
     },
     {
       "source": "/(.*)",
-      "destination": "client/$1"
+      "destination": "/$1"
     }
   ]
 }
