@@ -2,8 +2,19 @@
   "name": "gameofluck-root",
   "version": "1.0.0",
   "scripts": {
+    "build": "npm run build --prefix client",
     "install-all": "npm install --prefix backend && npm install --prefix client",
-    "build-client": "npm run build --prefix client",
     "start": "node backend/server.js"
+  },
+  "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "jsonwebtoken": "^9.0.3",
+    "mongoose": "^9.4.1",
+    "mysql2": "^3.22.1",
+    "sequelize": "^6.37.8",
+    "socket.io": "^4.8.3"
   }
 }
