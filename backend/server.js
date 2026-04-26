@@ -16,32 +16,22 @@ const wallet = require('./routes/wallet');
 
 dotenv.config();
 
-// Connect to MySQL
-connectDB();
+// Check for required Env Vars
+const requiredEnv = ['JWT_SECRET', 'DB_PASSWORD'];
+const missingEnv = requiredEnv.filter(k => !process.env[k] && !process.env['MYSQL_URL']);
+if (missingEnv.length > 0 && process.env.VERCEL) {
+    console.error(`❌ CRITICAL: Missing Environment Variables: ${missingEnv.join(', ')}`);
+}
+
+// Connect to MySQL (Async)
+connectDB().catch(err => {
+    console.error('Initial DB Connection Failure:', err.message);
+});
 
 // Sync Database Tables - Only in non-production or if explicitly allowed
-// In Vercel (serverless), we don't want to sync on every request
 if (process.env.NODE_ENV !== 'production' && !process.env.VERCEL) {
     sequelize.sync({ alter: true })
-        .then(async () => {
-            console.log('Database tables synchronized');
-            
-            // Seed Admin User
-            const User = require('./models/User');
-            const adminEmail = 'admin@rummy.com';
-            const adminExists = await User.findOne({ where: { email: adminEmail } });
-            
-            if (!adminExists) {
-                await User.create({
-                    username: 'Admin',
-                    email: adminEmail,
-                    password: 'rummy@4545', 
-                    role: 'admin',
-                    balance: 1000000
-                });
-                console.log('🛡️ Master Admin Account Created!');
-            }
-        })
+        .then(() => console.log('Database tables synchronized'))
         .catch(err => console.error('Error synchronizing tables:', err));
 }
 
