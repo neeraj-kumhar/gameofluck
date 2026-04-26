@@ -1,10 +1,12 @@
 {
-  "name": "gameofluck-root",
+  "name": "gameofluck-monorepo",
   "version": "1.0.0",
+  "private": true,
   "scripts": {
-    "build": "npm run build --prefix client",
-    "install-all": "npm install --prefix backend && npm install --prefix client",
-    "start": "node backend/server.js"
+    "install-all": "npm install && cd client && npm install && cd ../backend && npm install",
+    "client-dev": "cd client && npm run dev",
+    "backend-dev": "cd backend && npm run dev",
+    "dev": "npm run backend-dev & npm run client-dev"
   },
   "dependencies": {
     "bcryptjs": "^3.0.3",
