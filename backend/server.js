@@ -75,6 +75,9 @@ if (process.env.NODE_ENV === 'production' && !process.env.VERCEL) {
     // Standard Production Server
 } else if (process.env.VERCEL) {
     // Vercel fallback
+    app.get('/', (req, res) => {
+        res.status(200).send('Game of Luck Backend API is running on Vercel.');
+    });
 } else {
     // Local development: Serve Frontend Static Files
     const clientPath = path.join(__dirname, '../client/dist');
